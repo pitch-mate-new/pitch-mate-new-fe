@@ -79,14 +79,13 @@ type ApiMethodConfig<TData = unknown> = Omit<
   "url" | "method"
 >;
 
-const baseURL = import.meta.env.VITE_API_BASE_URL;
-
-if (import.meta.env.PROD && !baseURL) {
-  throw new Error("VITE_API_BASE_URL is required in production.");
-}
+const PRODUCTION_API_BASE_URL = "https://3-34-15-241.nip.io/api";
+const baseURL =
+  import.meta.env.VITE_API_BASE_URL ??
+  (import.meta.env.PROD ? PRODUCTION_API_BASE_URL : "");
 
 export const axiosInstance: AxiosInstance = axios.create({
-  baseURL: baseURL ?? "",
+  baseURL,
   timeout: DEFAULT_TIMEOUT_MS,
 });
 
