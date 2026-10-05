@@ -8,6 +8,7 @@ import {
 import type { VideoHistoryDetailResponse } from "@apis/types";
 import { PageError, PageLoading } from "@shared/ui";
 import { ROUTES } from "@router/constants";
+import EvaluationComparison from "./components/evaluation-comparison";
 
 import {
   DeleteVideoConfirmModal,
@@ -157,6 +158,13 @@ export default function VideoHistoryDetail() {
         <FeedbackViewSelector
           selectedView={selectedView}
           handleChangeView={setSelectedView}
+        />
+      )}
+      {visibleFeedbackView === "ALL" && (
+        <EvaluationComparison
+          videoId={historyVideoId}
+          ai={historyDetail.ai?.evaluation ?? null}
+          mentor={historyDetail.mentor?.evaluation ?? null}
         />
       )}
       {feedbackResults.length === 0 ? (
