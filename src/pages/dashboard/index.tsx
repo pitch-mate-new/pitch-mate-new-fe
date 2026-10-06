@@ -10,6 +10,7 @@ import {
   VideoEmptyView,
 } from "@shared/ui";
 import { useDashboardQuery } from "@apis/queries";
+import { useVideoHistoryQuery } from "@apis/queries";
 
 import { VideoCard } from "./components";
 
@@ -18,6 +19,10 @@ export default function Dashboard() {
 
   const { dashboardData, isPendingDashboard, isErrorDashboard } =
     useDashboardQuery();
+  const { allHistoryList } = useVideoHistoryQuery();
+  const recentEvaluations = (allHistoryList ?? [])
+    .filter((item) => item.analysisStatus === "COMPLETED")
+    .slice(0, 3);
 
   const handleToUpload = () => {
     navigate(ROUTES.VIDEO_UPLOAD);
@@ -56,6 +61,35 @@ export default function Dashboard() {
         completedCount={dashboardData?.analyzedVideos ?? 0}
         averageScore={dashboardData?.averageScore ?? null}
       />
+      {recentEvaluations.length > 0 && (
+        <section className="flex flex-col gap-5">
+          <h2 className="text-3xl leading-12 font-medium">최근 평가 결과</h2>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            {recentEvaluations.map((item) => (
+              <button
+                key={item.videoId}
+                type="button"
+                onClick={() =>
+                  navigate(ROUTES.VIDEO_HISTORY_DETAIL(String(item.videoId)))
+                }
+                className="flex items-center justify-between gap-3 rounded-2xl bg-white p-5 text-left shadow-[0_2px_5px_0_rgba(0,0,0,0.10)]"
+              >
+                <span className="min-w-0">
+                  <span className="block truncate font-semibold">
+                    {item.videoTitle}
+                  </span>
+                  <span className="text-sm text-[#71718A]">
+                    항목 평균 {(item.totalScore / 10).toFixed(1)}점 / 10
+                  </span>
+                </span>
+                <strong className="shrink-0 text-2xl text-[#6868FF]">
+                  {item.totalScore}점
+                </strong>
+              </button>
+            ))}
+          </div>
+        </section>
+      )}
       <section className="flex flex-1 flex-col gap-6">
         {!dashboardData?.recentVideos?.length ? (
           <VideoEmptyView />

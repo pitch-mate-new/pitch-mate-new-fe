@@ -53,7 +53,7 @@ export default function HistoryCard({
         compareMode && !notCompleted && "cursor-pointer",
       )}
       type="button"
-      disabled={notCompleted}
+      disabled={notCompleted && analysisStatus !== "FAILED"}
       onClick={() => handleClick(videoId)}
     >
       <div className="flex flex-row items-center gap-5">

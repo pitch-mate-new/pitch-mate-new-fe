@@ -35,6 +35,32 @@ export const useSubmitMentorFeedbackMutation = () => {
       toast.info("멘토 피드백이 완료되었습니다.");
     },
     onError: (error) => {
+      if (error.code === 4026) {
+        const payload = error.payload as
+          | {
+              result?: {
+                moderationReason?: string;
+                blockedTerms?: string[];
+                guideMessage?: string;
+              };
+            }
+          | undefined;
+        const result = payload?.result;
+        const reason = result?.moderationReason
+          ? `차단 사유: ${result.moderationReason}`
+          : "부적절한 표현이 포함되어 저장되지 않았습니다.";
+        const terms = result?.blockedTerms?.length
+          ? `확인된 표현: ${result.blockedTerms.join(", ")}`
+          : "";
+        toast.error(
+          [reason, terms, result?.guideMessage].filter(Boolean).join(" · "),
+        );
+        return;
+      }
+      if (error.code === 4025) {
+        toast.error("이미 이 영상에 멘토 평가를 제출했습니다.");
+        return;
+      }
       toast.error(`멘토 피드백 작성 실패: ${error.message}`);
     },
     retry: 0,

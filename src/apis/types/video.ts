@@ -54,7 +54,7 @@ export interface VideoUploadRequest {
   title: string;
   description: string;
   videoType: VideoType;
-  // practiceType: PracticeType;
+  practiceType?: PracticeType;
   requestedMentorId?: number | null;
   file: File;
 }
@@ -102,7 +102,7 @@ export interface VideoHistoryDetailAnalysis {
   analysisId: number;
   videoId: number;
   status: AnalysisStatus;
-  speechRateWpm: number;
+  speechRateWpm: number | null;
   silenceRatio: number;
   fillerWordCount: number;
   fillerWords: string[] | string;

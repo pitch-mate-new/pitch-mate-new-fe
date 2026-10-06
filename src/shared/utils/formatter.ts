@@ -10,3 +10,16 @@ export const formatDate = (createdAt: string) => {
     timeZone: "Asia/Seoul",
   });
 };
+
+export const formatDateTime = (createdAt: string) => {
+  const date = new Date(createdAt);
+  return date.toLocaleString("ko-KR", {
+    timeZone: "Asia/Seoul",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+};

@@ -139,7 +139,7 @@ export default function VideoHistory() {
                     analysisStatus={history.analysisStatus}
                     compareMode={compareMode}
                     handleClick={
-                      compareMode
+                      compareMode && history.analysisStatus !== "FAILED"
                         ? handleSelectCompareVideo
                         : handleToVideoDetail
                     }

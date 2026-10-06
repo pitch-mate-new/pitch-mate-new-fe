@@ -1,7 +1,7 @@
 import { CalendarDays, UserRound } from "lucide-react";
 
 import { cn } from "@utils/cn";
-import { formatDate, formatDuration } from "@utils/formatter";
+import { formatDateTime, formatDuration } from "@utils/formatter";
 
 import type { MentorDashboardVideo } from "../../types";
 
@@ -52,7 +52,7 @@ export default function MentorVideoCard({
           </span>
           <span className="flex flex-row items-center gap-1.5">
             <CalendarDays size={18} />
-            {formatDate(video.date)}
+            {formatDateTime(video.date)}
           </span>
         </div>
       </div>

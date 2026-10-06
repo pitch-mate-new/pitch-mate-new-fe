@@ -7,15 +7,17 @@ import type {
   RequestedVideosResponse,
   VideoCompareResponse,
   VideoHistoryDetailResponse,
+  VideoHistoryDetailAnalysis,
   VideoUploadRequest,
   VideoUploadResponse,
 } from "./types";
-import { HISTORY_URL, VIDEO_URL } from "./constants";
+import { ANALYSIS_URL, HISTORY_URL, VIDEO_URL } from "./constants";
 
 export const videoUploadApi = async ({
   title,
   description,
   videoType,
+  practiceType,
   requestedMentorId,
   file,
 }: VideoUploadRequest) => {
@@ -31,6 +33,7 @@ export const videoUploadApi = async ({
         title,
         description,
         videoType,
+        ...(practiceType && { practiceType }),
         ...(requestedMentorId !== null &&
           requestedMentorId !== undefined && { requestedMentorId }),
       },
@@ -95,4 +98,15 @@ export const deleteVideoApi = async (videoId: number) => {
   );
 
   return response.result;
+};
+
+export const requestAnalysisApi = async (videoId: number) => {
+  const response = await apiInstance.post<VideoHistoryDetailAnalysis>(
+    ANALYSIS_URL.BY_VIDEO(videoId),
+  );
+  return response.result;
+};
+
+export const deleteAnalysisApi = async (analysisId: number) => {
+  await apiInstance.delete(ANALYSIS_URL.BY_ID(analysisId));
 };

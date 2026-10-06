@@ -76,8 +76,35 @@ export default function AppLayout() {
     return <Navigate to={ROUTES.LOGIN} replace />;
   }
 
+  const userRole = localStorage.getItem("userRole");
+  const mentorOnlyPaths = [
+    ROUTES.MENTOR_DASHBOARD,
+    ROUTES.MENTOR_REQUESTED_VIDEOS,
+    ROUTES.MENTOR_FEEDBACK_HISTORY,
+    ROUTES.MENTEE_LIST,
+  ];
+  const menteeOnlyPaths = [
+    ROUTES.DASHBOARD,
+    ROUTES.VIDEO_UPLOAD,
+    ROUTES.MENTOR_LIST,
+    ROUTES.VIDEO_HISTORY,
+    ROUTES.HISTORY_COMPARE("", "").split("/").slice(0, 2).join("/"),
+  ];
+  if (
+    userRole === "MENTEE" &&
+    mentorOnlyPaths.some((path) => location.pathname.startsWith(path))
+  ) {
+    return <Navigate to={ROUTES.DASHBOARD} replace />;
+  }
+  if (
+    userRole === "MENTOR" &&
+    menteeOnlyPaths.some((path) => location.pathname.startsWith(path))
+  ) {
+    return <Navigate to={ROUTES.MENTOR_DASHBOARD} replace />;
+  }
+
   return (
-    <main className="flex h-screen overflow-hidden">
+    <main className="flex h-screen min-w-0 overflow-hidden">
       <SideBar
         pathname={location.pathname}
         isOpen={isOpen}

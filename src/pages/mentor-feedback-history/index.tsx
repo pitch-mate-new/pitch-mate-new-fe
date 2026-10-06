@@ -1,6 +1,10 @@
 import { useNavigate } from "react-router-dom";
+import { useQueries } from "@tanstack/react-query";
 
 import { useCompletedRequestedVideosQuery } from "@apis/queries";
+import { HISTORY_QUERY_KEY } from "@apis/query-key";
+import { getVideoHistoryDetailApi } from "@apis/video";
+import { summarizeRubricScores } from "@utils/rubric";
 import { ROUTES } from "@router/constants";
 import { PageError, PageLoading } from "@shared/ui";
 
@@ -13,6 +17,15 @@ export default function MentorFeedbackHistory() {
     isPendingCompletedRequestedVideos,
     isErrorCompletedRequestedVideos,
   } = useCompletedRequestedVideosQuery();
+  const scoreQueries = useQueries({
+    queries: (completedRequestedVideos ?? []).map((item) => ({
+      queryKey: HISTORY_QUERY_KEY.DETAIL(item.videoId),
+      queryFn: () => getVideoHistoryDetailApi(item.videoId),
+      retry: 2,
+      staleTime: 1000 * 60 * 10,
+      gcTime: 1000 * 60 * 15,
+    })),
+  });
 
   if (isPendingCompletedRequestedVideos) {
     return <PageLoading />;
@@ -35,15 +48,25 @@ export default function MentorFeedbackHistory() {
         </div>
       ) : (
         <section className="grid grid-cols-2 gap-6">
-          {completedRequestedVideos.map((item) => (
-            <HistoryCard
-              key={item.videoId}
-              item={item}
-              handleClick={(videoId) =>
-                navigate(ROUTES.MENTOR_FEEDBACK_HISTORY_DETAIL(String(videoId)))
-              }
-            />
-          ))}
+          {completedRequestedVideos.map((item, index) => {
+            const evaluation = scoreQueries[index]?.data?.mentor?.evaluation;
+            const scoreSummary = evaluation
+              ? summarizeRubricScores(evaluation.scores)
+              : null;
+            return (
+              <HistoryCard
+                key={item.videoId}
+                item={item}
+                totalScore={scoreSummary?.totalScore ?? evaluation?.totalScore}
+                itemAverage={scoreSummary?.itemAverage}
+                handleClick={(videoId) =>
+                  navigate(
+                    ROUTES.MENTOR_FEEDBACK_HISTORY_DETAIL(String(videoId)),
+                  )
+                }
+              />
+            );
+          })}
         </section>
       )}
     </div>

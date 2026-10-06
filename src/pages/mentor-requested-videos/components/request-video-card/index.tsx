@@ -1,7 +1,7 @@
 import { CalendarDays, Clock, UserRound } from "lucide-react";
 
 import type { VideoMetadata } from "@apis/types";
-import { formatDate, formatDuration } from "@utils/formatter";
+import { formatDateTime, formatDuration } from "@utils/formatter";
 
 interface RequestVideoCardProps {
   video: VideoMetadata;
@@ -51,7 +51,7 @@ export default function RequestVideoCard({
           </span>
           <span className="flex flex-row items-center gap-1.5">
             <CalendarDays size={18} />
-            {formatDate(video.createdAt)}
+            {formatDateTime(video.createdAt)}
           </span>
           <span className="flex flex-row items-center gap-1.5">
             <Clock size={18} />

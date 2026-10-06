@@ -19,7 +19,7 @@ import {
   VideoUploadSection,
 } from "./components";
 import type { Mentor } from "@pages/mentor-list/types";
-import type { ConnectionListResponse } from "@apis/types";
+import type { ConnectionListResponse, PracticeType } from "@apis/types";
 
 const isAllowedVideoFile = (file: File) => {
   const lowerCaseName = file.name.toLowerCase();
@@ -57,6 +57,8 @@ export default function VideoUpload() {
   const [uploadType, setUploadType] = useState<"UPLOAD" | "RECORD">("UPLOAD");
   const [videoTitle, setVideoTitle] = useState("");
   const [videoDesc, setVideoDesc] = useState("");
+  const [practiceType, setPracticeType] =
+    useState<PracticeType>("PRESENTATION");
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [videoPreviewUrl, setVideoPreviewUrl] = useState<string | null>(null);
   // ADDED_UPLOAD_MENTOR_REQUEST: mentor feedback is optional; null means AI feedback only.
@@ -125,6 +127,7 @@ export default function VideoUpload() {
       title: videoTitle,
       description: videoDesc,
       videoType: uploadType,
+      practiceType,
       file: videoFile,
       requestedMentorId: selectedMentorId,
     });
@@ -133,6 +136,7 @@ export default function VideoUpload() {
   const handleReset = () => {
     setVideoTitle("");
     setVideoDesc("");
+    setPracticeType("PRESENTATION");
     setSelectedMentorId(null);
     clearSelectedVideo();
   };
@@ -180,6 +184,8 @@ export default function VideoUpload() {
           videoDesc={videoDesc}
           handleChangeTitle={setVideoTitle}
           handleChangeDesc={setVideoDesc}
+          practiceType={practiceType}
+          handleChangePracticeType={setPracticeType}
         />
         <MentorFeedbackSection
           connectedMentors={connectedMentors}

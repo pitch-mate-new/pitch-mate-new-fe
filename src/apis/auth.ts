@@ -19,6 +19,18 @@ export const signupApi = async (data: SignupRequestBody) => {
   return response.result;
 };
 
+export const checkSignupValueApi = async (
+  field: "email" | "nickname",
+  value: string,
+) => {
+  const path =
+    field === "email" ? AUTH_URL.CHECK_EMAIL : AUTH_URL.CHECK_NICKNAME;
+  const response = await apiInstance.get<Record<string, boolean>>(path, {
+    params: { [field]: value },
+  });
+  return Object.values(response.result)[0] ?? true;
+};
+
 export const loginApi = async (data: LoginRequestBoby) => {
   const response = await apiInstance.post<LoginResponse, LoginRequestBoby>(
     AUTH_URL.LOGIN,

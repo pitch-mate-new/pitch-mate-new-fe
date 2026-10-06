@@ -1,14 +1,21 @@
 import { CalendarDays, Clock, UserRound } from "lucide-react";
 
 import type { VideoMetadata } from "@apis/types";
-import { formatDate, formatDuration } from "@utils/formatter";
+import { formatDateTime, formatDuration } from "@utils/formatter";
 
 interface HistoryCardProps {
   item: VideoMetadata;
+  totalScore?: number;
+  itemAverage?: number;
   handleClick: (videoId: number) => void;
 }
 
-export default function HistoryCard({ item, handleClick }: HistoryCardProps) {
+export default function HistoryCard({
+  item,
+  totalScore,
+  itemAverage,
+  handleClick,
+}: HistoryCardProps) {
   const durationSeconds = item.durationSeconds ?? 0;
 
   return (
@@ -48,6 +55,26 @@ export default function HistoryCard({ item, handleClick }: HistoryCardProps) {
         <p className="line-clamp-2 text-lg leading-7 text-[#71718A]">
           {item.description || "멘토 피드백이 완료된 영상입니다."}
         </p>
+        {(totalScore !== undefined || itemAverage !== undefined) && (
+          <div className="flex flex-wrap gap-x-4 gap-y-1 rounded-xl bg-[#F5F5FA] px-4 py-3 text-base font-semibold text-[#1A1A2E]">
+            {totalScore !== undefined && (
+              <span>
+                총점{" "}
+                <strong className="text-[#6868FF]">
+                  {totalScore}점 / 100점
+                </strong>
+              </span>
+            )}
+            {itemAverage !== undefined && (
+              <span>
+                항목 평균{" "}
+                <strong className="text-[#6868FF]">
+                  {itemAverage.toFixed(1)}점 / 10점
+                </strong>
+              </span>
+            )}
+          </div>
+        )}
         <div className="mt-auto flex flex-row flex-wrap gap-x-5 gap-y-2 text-lg text-[#71718A]">
           <span className="flex flex-row items-center gap-1.5">
             <UserRound size={18} />
@@ -55,7 +82,7 @@ export default function HistoryCard({ item, handleClick }: HistoryCardProps) {
           </span>
           <span className="flex flex-row items-center gap-1.5">
             <CalendarDays size={18} />
-            {formatDate(item.createdAt)}
+            {formatDateTime(item.createdAt)}
           </span>
           <span className="flex flex-row items-center gap-1.5">
             <Clock size={18} />

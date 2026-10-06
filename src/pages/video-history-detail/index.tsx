@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Navigate, useParams } from "react-router-dom";
 
 import {
@@ -8,6 +9,9 @@ import {
 import type { VideoHistoryDetailResponse } from "@apis/types";
 import { PageError, PageLoading } from "@shared/ui";
 import { ROUTES } from "@router/constants";
+import { deleteAnalysisApi, requestAnalysisApi } from "@apis/video";
+import { HISTORY_QUERY_KEY } from "@apis/query-key";
+import useToast from "@hooks/use-toast";
 import EvaluationComparison from "./components/evaluation-comparison";
 
 import {
@@ -95,6 +99,26 @@ export default function VideoHistoryDetail() {
   const { historyDetail, isPendingHistoryDetail, isErrorHistoryDetail } =
     useVideoHistoryDetailQuery(historyVideoId);
   const { deleteVideo, isPendingDeleteVideo } = useDeleteVideoMutation();
+  const queryClient = useQueryClient();
+  const toast = useToast();
+  const reanalyze = useMutation({
+    mutationFn: async () => {
+      const analysis = historyDetail?.ai?.analysis;
+      if (!analysis) throw new Error("분석 정보를 찾을 수 없습니다.");
+      await deleteAnalysisApi(analysis.analysisId);
+      return requestAnalysisApi(historyVideoId ?? 0);
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: HISTORY_QUERY_KEY.DETAIL(historyVideoId ?? 0),
+      });
+      await queryClient.invalidateQueries({
+        queryKey: HISTORY_QUERY_KEY.DEFAULT,
+      });
+      toast.info("분석을 다시 요청했습니다.");
+    },
+    onError: (error) => toast.error(`재분석 요청 실패: ${error.message}`),
+  });
   const [selectedView, setSelectedView] = useState<FeedbackViewType>("AI");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
@@ -154,6 +178,30 @@ export default function VideoHistoryDetail() {
         onClickDelete={() => setIsDeleteModalOpen(true)}
       />
       <HistoryDetailVideo videoUrl={historyDetail.video.videoUrl} />
+      {historyDetail.ai?.analysis?.status === "FAILED" && (
+        <section
+          role="alert"
+          className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-red-200 bg-red-50 p-5"
+        >
+          <div>
+            <h2 className="font-semibold text-red-800">
+              AI 분석에 실패했습니다.
+            </h2>
+            <p className="mt-1 text-red-700">
+              {historyDetail.ai.analysis.errorMessage ||
+                "실패 원인이 제공되지 않았습니다."}
+            </p>
+          </div>
+          <button
+            type="button"
+            disabled={reanalyze.isPending}
+            onClick={() => reanalyze.mutate()}
+            className="rounded-xl bg-[#6868FF] px-5 py-3 font-semibold text-white disabled:opacity-60"
+          >
+            {reanalyze.isPending ? "재요청 중..." : "다시 분석 요청"}
+          </button>
+        </section>
+      )}
       {shouldShowFeedbackSelector && (
         <FeedbackViewSelector
           selectedView={selectedView}

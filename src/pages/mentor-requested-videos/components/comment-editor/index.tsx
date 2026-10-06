@@ -2,10 +2,7 @@ import { Plus, Trash2 } from "lucide-react";
 
 import { formatDuration } from "@utils/formatter";
 
-import type {
-  SegmentComment,
-  SegmentCommentDraft,
-} from "../../types";
+import type { SegmentComment, SegmentCommentDraft } from "../../types";
 
 interface CommentEditorProps {
   comments: SegmentComment[];
@@ -36,7 +33,7 @@ export default function CommentEditor({
         </p>
       </div>
 
-      <div className="grid grid-cols-[12rem_12rem_1fr_auto] items-end gap-4 rounded-2xl bg-[#F7F7FC] p-5">
+      <div className="grid grid-cols-1 items-end gap-4 rounded-2xl bg-[#F7F7FC] p-5 sm:grid-cols-[12rem_12rem_1fr_auto_auto]">
         <div className="flex flex-col gap-2 text-lg font-semibold">
           시작
           <span className="flex h-13 items-center rounded-xl border border-[rgba(0,0,0,0.08)] bg-white px-4 text-lg text-[#6868FF]">
@@ -60,6 +57,23 @@ export default function CommentEditor({
               handleChangeDraft({ ...draft, content: event.target.value })
             }
           />
+        </label>
+        <label className="flex flex-col gap-2 text-lg font-semibold">
+          평가
+          <select
+            className="h-13 rounded-xl border border-[rgba(0,0,0,0.08)] bg-white px-3"
+            value={draft.rating}
+            onChange={(event) =>
+              handleChangeDraft({
+                ...draft,
+                rating: event.target.value as SegmentCommentDraft["rating"],
+              })
+            }
+          >
+            <option value="GOOD">좋음</option>
+            <option value="NORMAL">개선</option>
+            <option value="BAD">심각</option>
+          </select>
         </label>
         <button
           className="flex h-13 w-13 items-center justify-center rounded-xl bg-[#6868FF] text-white disabled:bg-[#ADADAD]"
@@ -91,6 +105,13 @@ export default function CommentEditor({
                 <p className="text-xl leading-8 text-[#1A1A2E]">
                   {comment.content}
                 </p>
+                <span className="text-sm text-[#71718A]">
+                  {
+                    { GOOD: "좋음", NORMAL: "개선", BAD: "심각" }[
+                      comment.rating ?? "GOOD"
+                    ]
+                  }
+                </span>
               </div>
               <button
                 className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[rgba(0,0,0,0.08)] text-[#71718A]"

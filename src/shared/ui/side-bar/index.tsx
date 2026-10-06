@@ -41,8 +41,7 @@ const getStoredUserRole = (): UserRole => {
   return localStorage.getItem("userRole") === "MENTOR" ? "MENTOR" : "MENTEE";
 };
 
-const getRoleLabel = (role: UserRole) =>
-  role === "MENTOR" ? "멘토" : "멘티";
+const getRoleLabel = (role: UserRole) => (role === "MENTOR" ? "멘토" : "멘티");
 
 export default function SideBar({
   pathname,
@@ -57,7 +56,9 @@ export default function SideBar({
   const handleToPage = (item: MenuItem) => {
     if (!item.path) {
       // ADDED_ROLE_FLOW: pages that are not implemented yet only log for now.
-      console.log(item.logMessage ?? `${item.label} 페이지는 아직 준비 중입니다.`);
+      console.log(
+        item.logMessage ?? `${item.label} 페이지는 아직 준비 중입니다.`,
+      );
       return;
     }
 
@@ -153,7 +154,7 @@ export default function SideBar({
     <div
       className={cn(
         "flex h-full shrink-0 flex-col border-r border-[rgba(0,0,0,0.08)] bg-[#FAFAFF]",
-        isOpen ? "w-95" : "w-23.25",
+        isOpen ? "w-16 md:w-95" : "w-16 md:w-23.25",
       )}
     >
       <div
@@ -184,11 +185,13 @@ export default function SideBar({
           <div
             className={cn(
               "mb-3",
-              isOpen ? "flex px-2.5" : "flex justify-center",
+              isOpen
+                ? "flex justify-center px-2.5 md:justify-start"
+                : "flex justify-center",
             )}
           >
             <span className="w-fit rounded-full bg-[rgba(104,104,255,0.10)] px-3 py-1 text-lg font-semibold text-[#6868FF]">
-              {roleLabel}
+              <span className="hidden md:inline">{roleLabel}</span>
             </span>
           </div>
           {menuItems.map((item) => (
@@ -206,7 +209,7 @@ export default function SideBar({
               {isOpen && (
                 <h3
                   className={cn(
-                    "text-2xl text-[#71718A]",
+                    "hidden text-2xl text-[#71718A] md:block",
                     item.isActive && "font-semibold text-[#6868FF]",
                   )}
                 >
@@ -225,7 +228,11 @@ export default function SideBar({
           onClick={handleLogout}
         >
           <LogOut size={32} color="#71718A" />
-          {isOpen && <h3 className="text-2xl text-[#71718A]">로그아웃</h3>}
+          {isOpen && (
+            <h3 className="hidden text-2xl text-[#71718A] md:block">
+              로그아웃
+            </h3>
+          )}
         </button>
       </div>
     </div>

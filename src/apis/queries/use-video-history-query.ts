@@ -46,6 +46,11 @@ export const useVideoHistoryDetailQuery = (videoId: number | null) => {
         ? HISTORY_QUERY_KEY.DETAIL(0)
         : HISTORY_QUERY_KEY.DETAIL(videoId),
     queryFn: () => getVideoHistoryDetailApi(videoId ?? 0),
+    refetchInterval: (query) => {
+      const status = query.state.data?.ai?.analysis?.status;
+      return status === "PENDING" || status === "IN_PROGRESS" ? 10_000 : false;
+    },
+    refetchIntervalInBackground: true,
     enabled: videoId !== null,
     retry: 2,
     staleTime: 1000 * 60 * 10,

@@ -1,7 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import { CheckCircle2, Clock3, UsersRound } from "lucide-react";
 
-import { useMentorDashboardQuery } from "@apis/queries";
+import {
+  useCompletedRequestedVideosQuery,
+  useMentorDashboardQuery,
+} from "@apis/queries";
 import { PageError, PageLoading } from "@shared/ui";
 import { ROUTES } from "@router/constants";
 
@@ -19,6 +22,7 @@ export default function MentorDashboard() {
     isPendingMentorDashboard,
     isErrorMentorDashboard,
   } = useMentorDashboardQuery();
+  const { completedRequestedVideos } = useCompletedRequestedVideosQuery();
 
   const summaryItems = [
     {
@@ -58,6 +62,16 @@ export default function MentorDashboard() {
   const handleClickRequestedVideo = (video: MentorDashboardVideo) => {
     navigate(ROUTES.MENTOR_REQUESTED_VIDEO_DETAIL(String(video.id)));
   };
+  const completedVideos: MentorDashboardVideo[] =
+    completedRequestedVideos?.map((video) => ({
+      id: video.videoId,
+      title: video.title,
+      menteeNickname: video.ownerNickname,
+      thumbnailUrl: video.thumbnailUrl,
+      durationSeconds: video.durationSeconds,
+      date: video.createdAt,
+      status: "COMPLETED",
+    })) ?? [];
 
   if (isPendingMentorDashboard) {
     return <PageLoading />;
@@ -85,6 +99,16 @@ export default function MentorDashboard() {
           emptyMessage="새로운 피드백 요청이 없습니다."
           viewAllPath={ROUTES.MENTOR_REQUESTED_VIDEOS}
           handleClickVideo={handleClickRequestedVideo}
+        />
+        <VideoListSection
+          title="최근 피드백 히스토리"
+          description="멘토 피드백을 완료한 최근 영상입니다."
+          videos={completedVideos}
+          emptyMessage="완료한 피드백이 없습니다."
+          viewAllPath={ROUTES.MENTOR_FEEDBACK_HISTORY}
+          handleClickVideo={(video) =>
+            navigate(ROUTES.MENTOR_FEEDBACK_HISTORY_DETAIL(String(video.id)))
+          }
         />
       </section>
     </div>

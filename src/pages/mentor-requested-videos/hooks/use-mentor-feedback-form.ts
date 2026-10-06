@@ -14,6 +14,7 @@ const INITIAL_COMMENT_DRAFT: SegmentCommentDraft = {
   startTimeSeconds: 0,
   endTimeSeconds: 0,
   content: "",
+  rating: "GOOD",
 };
 
 interface UseMentorFeedbackFormParams {
@@ -62,6 +63,7 @@ export const useMentorFeedbackForm = ({
         startTimeSeconds: commentDraft.startTimeSeconds,
         endTimeSeconds: commentDraft.endTimeSeconds,
         content: commentDraft.content.trim(),
+        rating: commentDraft.rating,
       },
     ]);
     setCommentDraft({
@@ -111,7 +113,7 @@ export const useMentorFeedbackForm = ({
       await handleSubmitFeedback({
         videoId,
         feedbacks: comments.map((comment) => ({
-          rating: "GOOD",
+          rating: comment.rating ?? "GOOD",
           startTimeSeconds: comment.startTimeSeconds,
           endTimeSeconds: comment.endTimeSeconds,
           content: comment.content,
@@ -126,7 +128,7 @@ export const useMentorFeedbackForm = ({
       });
       handleCompleteFeedback();
     } catch {
-      // Mutation handles error toast.
+      // The mutation reports the API error; moderation details are read by the page.
     }
   };
 

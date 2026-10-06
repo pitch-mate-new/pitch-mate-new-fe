@@ -41,10 +41,12 @@ export type {
   RequestedVideosResponse,
   VideoCompareResponse,
   VideoHistoryDetailEvaluation,
+  VideoHistoryDetailAnalysis,
   VideoHistoryDetailResponse,
   VideoMetadata,
   VideoUploadRequest,
   VideoUploadResponse,
+  PracticeType,
 } from "./video";
 
 export type {

@@ -3,6 +3,8 @@ export const AUTH_URL = {
   LOGIN: "/auth/login",
   LOGOUT: "/auth/logout",
   REISSUE: "/auth/reissue",
+  CHECK_EMAIL: "/auth/check-email",
+  CHECK_NICKNAME: "/auth/check-nickname",
 };
 
 export const DASHBOARD_URL = {
@@ -19,6 +21,11 @@ export const VIDEO_URL = {
   DETAIL: (videoId: number) => `/videos/${videoId}`,
   REQUESTED: "/videos/requested",
   REQUESTED_COMPLETED: "/videos/requested/completed",
+};
+
+export const ANALYSIS_URL = {
+  BY_VIDEO: (videoId: number) => `/videos/${videoId}/analysis`,
+  BY_ID: (analysisId: number) => `/analysis/${analysisId}`,
 };
 
 export const RUBRICS_URL = {

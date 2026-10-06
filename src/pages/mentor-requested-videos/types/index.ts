@@ -14,12 +14,14 @@ export interface SegmentComment {
   startTimeSeconds: number;
   endTimeSeconds: number;
   content: string;
+  rating?: "GOOD" | "NORMAL" | "BAD";
 }
 
 export interface SegmentCommentDraft {
   startTimeSeconds: number;
   endTimeSeconds: number;
   content: string;
+  rating: "GOOD" | "NORMAL" | "BAD";
 }
 
 export interface MentorRubricItem {
