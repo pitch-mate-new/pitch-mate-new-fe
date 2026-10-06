@@ -52,7 +52,7 @@ export default function VideoListSection({
           {emptyMessage}
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid w-full max-w-7xl grid-cols-2 gap-4">
           {visibleVideos.map((video) => (
             <MentorVideoCard
               key={video.id}

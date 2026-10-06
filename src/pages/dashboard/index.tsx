@@ -105,7 +105,7 @@ export default function Dashboard() {
                 <ArrowRight color="#6868FF" />
               </Link>
             </div>
-            <div className="grid grid-cols-2 grid-rows-2 gap-8">
+            <div className="grid w-full max-w-7xl grid-cols-2 grid-rows-2 gap-8">
               {dashboardData?.recentVideos.map((video) => (
                 <VideoCard
                   key={video.videoId}

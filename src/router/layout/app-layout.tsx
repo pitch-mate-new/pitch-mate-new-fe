@@ -9,6 +9,11 @@ import {
 } from "@shared/apis";
 import { PageLoading, SideBar } from "@shared/ui";
 
+const isPathWithinRoute = (pathname: string, route: string) =>
+  route === ROUTES.DASHBOARD
+    ? pathname === route
+    : pathname === route || pathname.startsWith(`${route}/`);
+
 export default function AppLayout() {
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(true);
@@ -92,13 +97,13 @@ export default function AppLayout() {
   ];
   if (
     userRole === "MENTEE" &&
-    mentorOnlyPaths.some((path) => location.pathname.startsWith(path))
+    mentorOnlyPaths.some((path) => isPathWithinRoute(location.pathname, path))
   ) {
     return <Navigate to={ROUTES.DASHBOARD} replace />;
   }
   if (
     userRole === "MENTOR" &&
-    menteeOnlyPaths.some((path) => location.pathname.startsWith(path))
+    menteeOnlyPaths.some((path) => isPathWithinRoute(location.pathname, path))
   ) {
     return <Navigate to={ROUTES.MENTOR_DASHBOARD} replace />;
   }
